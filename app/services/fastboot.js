@@ -11,11 +11,17 @@ const RequestObject = Ember.Object.extend({
     let request = this.request;
     delete this.request;
 
+    let protocol = request.protocol.replace(':', '');
+    let forwardedProto = request.headers['headers']['x-forwarded-proto'];
+    if (forwardedProto) {
+      protocol = forwardedProto[0];
+    }
+
     this.cookies = request.cookies;
     this.headers = request.headers;
     this.queryParams = request.queryParams;
     this.path = request.path;
-    this.protocol = request.protocol;
+    this.protocol = protocol;
     this._host = function() {
       return request.host();
     };
